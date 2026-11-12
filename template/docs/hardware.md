@@ -1,14 +1,18 @@
 # Hardware
 
-<!-- Generator: fill from the Notecard, Notecarrier, Host, Components, Wiring, and Power interview topics. Link datasheets in docs/datasheets/ where available. -->
+<!-- Generator: fill from the Kit, Notecard, Notecarrier, Host, Components, Firmware updates, Wiring, and Power interview topics. Link datasheets in docs/datasheets/ where available. -->
 
 ## Bill of materials
 
+Kit: {{Blues kit name, or "none"}}
+
+<!-- Generator: a kit answers much of this file. Look up its contents and fill the rows it covers instead of asking, and confirm the SKU printed on the Notecard. The kit's Notecarrier and host also settle some of the Wiring and Host firmware updates answers, so look those up before asking too. -->
+
 | Role | Part | Part number / SKU | Datasheet |
 | --- | --- | --- | --- |
-| Notecard | {{e.g. Notecard Cell+WiFi}} | `{{NOTE-XXXXX}}` | {{LINK}} |
+| Notecard | {{e.g. Notecard Cell+WiFi}} | `{{e.g. NOTE-MBGLW}}` | {{LINK}} |
 | Notecarrier | {{e.g. Notecarrier F v1.5}} | {{PART_NUMBER}} | {{LINK}} |
-| Host MCU | {{e.g. Blues Swan}} | {{PART_NUMBER}} | {{LINK}} |
+| Host MCU | {{e.g. Blues Cygnet}} | {{PART_NUMBER}} | {{LINK}} |
 | {{Sensor / actuator / display}} | {{NAME}} | {{PART_NUMBER}} | {{LINK}} |
 | Battery | {{e.g. 3.7 V 2000 mAh LiPo}} | {{PART_NUMBER}} | {{LINK}} |
 | Antenna | {{NAME}} | {{PART_NUMBER}} | {{LINK}} |
@@ -30,9 +34,16 @@
 
 <!-- Generator: if the user has a photo or diagram, save it to docs/ and link it here. -->
 
+## Host firmware updates
+
+- **Method:** {{Notecard Outboard Firmware Update / IAP / none}}
+- **Wiring:** {{e.g. "pre-wired on the Notecarrier", or which host pins connect to which Notecard pins; N/A if the method needs no wiring}}
+
+The firmware enables this at startup (see [configuration](./configuration.md)) and reports its version to Notehub on every boot.
+
 ## Power
 
 - **Source:** {{USB / LiPo / solar + LiPo / mains / ...}}
-- **Notecard voltage mode:** `{{card.voltage mode}}` (applied by the firmware; see [configuration](./configuration.md))
+- **Notecard voltage mode:** `{{e.g. lipo}}` (applied by the firmware; see [configuration](./configuration.md))
 - **Sleep strategy:** {{always on / host sleeps between readings / Notecard ATTN cuts host power}}
 - **Battery-life target:** {{e.g. 6 months / N/A}}

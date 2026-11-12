@@ -22,42 +22,32 @@ Instructions for AI coding agents working on {{PROJECT_NAME}}. Claude Code reads
 
 ## MCP servers
 
-This project is configured with two Blues MCP servers (`.mcp.json`, `.cursor/mcp.json`, `.vscode/mcp.json`). Use them instead of answering from memory. Blues APIs change, and training data goes stale.
+This project is configured with two Blues MCP servers (`.mcp.json`, `.cursor/mcp.json`, `.vscode/mcp.json`). Use them instead of answering from memory, and follow each server's own instructions. If a server isn't connected, start at https://dev.blues.io/llms.txt.
 
-### Blues Expert MCP: firmware and Notecard APIs
+- **Blues Expert** (`https://mcp.blues.io/expert/mcp`): writing or reviewing firmware and Notecard requests, and general Blues questions. **Run its `api_validate` tool on every Notecard request you write**, before it goes into the firmware.
+- **Notehub MCP** (`https://mcp.notehub.io/mcp`, browser sign-in): anything involving real devices, events, or fleets, including Notehub IQ questions about this project's data. For longer Notehub work, Blues also publishes agent skills at https://notehub.md.
 
-`https://mcp.blues.io/expert/mcp` (no auth). Use it for **writing or reviewing firmware and Notecard requests**.
+When working in Notehub:
 
-- **Before writing or substantially changing firmware, call `firmware_entrypoint`.**
-- Use `firmware_best_practices` for power, sync strategy, templates, and error handling.
-- Use `api_docs` for the exact arguments of a Notecard request.
-- **Run `api_validate` on every Notecard JSON request you write**, before adding it to the firmware.
-- Use `docs_search` for general Blues questions: pinouts, SKUs, Notehub features, troubleshooting.
-
-### Notehub MCP: live device data
-
-`https://mcp.notehub.io/mcp` (browser sign-in). Use it for **anything involving real devices, events, or fleets**: checking that new firmware sends what it should, answering questions about device health and sensor trends with Notehub IQ, reading environment variables, and comparing host firmware versions with `_session.qo`.
-
-- Follow the server's own instructions: load its skill first, find this project's repository, and check the schema before querying.
 - Use the Notehub project named in `docs/data.md`.
 - **Ask before making any change in Notehub**, such as setting env vars, creating fleets, or sending notes to devices. These affect real hardware.
 - Interpret data using the field descriptions, units, and normal ranges in `docs/data.md`, and the firmware source.
 
-### Using both
-
-Cross-reference them. For example, when debugging "device X stopped reporting," read the firmware's sync and sleep logic and `docs/hardware.md` → *Power*, then query `_session.qo` and `_health.qo` for that device through Notehub MCP.
+Cross-reference the two. For example, when debugging "device X stopped reporting," read the firmware's sync and sleep logic and `docs/hardware.md` → *Power*, then look at that device's recent sessions and health events in Notehub.
 
 ## Firmware
 
 - Use the platform, toolchain, and board in `firmware/README.md`.
 - Pin assignments must match `docs/hardware.md` → *Wiring*.
-- Prefer Notecard features over hand-rolled ones: note templates, `env.get` for remote configuration, `card.attn` / `card.voltage` for power, `hub.sync` only when necessary.
+- Follow Blues Expert's firmware guidance on how to use the Notecard, rather than hand-rolling what it already does.
 - Read tunable values from Notehub environment variables, with in-code defaults that match `docs/configuration.md`.
-- The firmware applies the Notecard configuration in `docs/configuration.md` at startup (`hub.set`, `card.voltage`, note templates, ...). Flashing the host is all it takes to set up a device, so keep the firmware and that doc in sync.
+- The firmware applies the Notecard configuration in `docs/configuration.md` at startup (`hub.set`, `card.voltage`, `card.location.mode`, note templates, `card.dfu`, ...). Flashing the host is all it takes to set up a device, so keep the firmware and that doc in sync.
+- The firmware reports its version to Notehub on every boot with the `version` argument of `hub.set`. Bump the version in the source with every release, and in `firmware/README.md`.
 - Before saying a firmware change works, build it. If a device is connected, flash it, check serial output, and confirm the expected events through Notehub MCP.
 
 ## Dashboard
 
 - Call the Notehub API from server-side code only. Never expose `NOTEHUB_PERSONAL_ACCESS_TOKEN` to the browser.
+- The token carries the user's privileges in this one project only (see `dashboard/README.md`). Never suggest a token that reaches all of their projects.
 - Use the Notefile names, fields, and units in `docs/data.md`.
 - Dashboard secrets and settings live in `dashboard/.env` (never committed). Add new variables to both `dashboard/.env.example` and the table in `dashboard/README.md`.
